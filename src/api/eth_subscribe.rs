@@ -126,10 +126,9 @@ impl<T: DuplexTransport> EthSubscribe<T> {
     }
 
     /// Create a pending transactions subscription
-    pub async fn subscribe_new_pending_transactions(&self, filter: Filter) -> error::Result<SubscriptionStream<T, Log>> {
+    pub async fn subscribe_new_pending_transactions(&self) -> error::Result<SubscriptionStream<T, H256>> {
         let subscription = helpers::serialize(&&"newPendingTransactions");
-        let filter = helpers::serialize(&filter);
-        let response = self.transport.execute("eth_subscribe", vec![subscription, filter]).await?;
+        let response = self.transport.execute("eth_subscribe", vec![subscription]).await?;
         let id: String = helpers::decode(response)?;
         SubscriptionStream::new(self.transport.clone(), SubscriptionId(id))
     }
